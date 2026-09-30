@@ -1,6 +1,6 @@
-# Memory Match v1
+#Tap Tile v1
 
-A dependency-free Persian memory matching game built as a local WebView app.
+A dependency-free Persian Tap Tile game built as a local WebView app.
 
 ## Features
 - Animals, flags, shapes, colors, fruits, vehicles

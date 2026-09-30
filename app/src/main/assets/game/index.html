@@ -3,39 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#17152d">
-<title>بازی جفت‌ها</title>
+<meta name="theme-color" content="#0d1020">
+<title>Tap Tile</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="app">
-  <section id="home" class="screen active">
-    <div class="hero">
-      <div class="logo"><img src="assets/logo.svg"></div>
-      <div><h1>بازی جفت‌ها</h1><p>حافظه‌ات را به چالش بکش</p></div>
+<section id="home" class="screen active">
+  <header class="home-header">
+    <div class="brand"><div class="brand-mark"><img src="assets/logo.svg" alt="Tap Tile"></div><div><h1>Tap Tile</h1><p>بازی حافظه‌ی مینیمال</p></div></div>
+    <button id="settings-open" class="icon-btn settings-btn" aria-label="تنظیمات"><span></span><span></span><span></span></button>
+  </header>
+
+  <div class="hero-banner">
+    <div><span class="eyebrow">MEMORY · MATCH · FOCUS</span><h2>دو کاشی یکسان را<br><strong>پیدا کن.</strong></h2><p>تمرکز، سرعت و حافظه‌ات را در مراحل مختلف به چالش بکش.</p></div>
+    <div class="hero-art"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <section class="home-card">
+    <div class="home-tabs"><button class="tab active" data-tab="play">بازی</button><button class="tab" data-tab="records">رکوردها</button></div>
+    <div id="play-panel">
+      <div class="section-head"><div><b>موضوع</b><small>یک مجموعه انتخاب کن</small></div><span id="category-count"></span></div>
+      <div id="categories" class="chips"></div>
+      <div class="section-head stage-head"><div><b>مرحله</b><small>با پیشرفت، مراحل سخت‌تر می‌شوند</small></div></div>
+      <div id="stages" class="stage-grid"></div>
+      <button id="start" class="primary big">شروع بازی <span>›</span></button>
     </div>
-    <div class="home-card">
-      <div class="home-tabs"><button class="tab active" data-tab="play">بازی</button><button class="tab" data-tab="records">رکوردها</button></div>
-      <div id="play-panel">
-        <div class="label">موضوع</div><div id="categories" class="chips"></div>
-        <div class="label">مرحله</div><div id="stages" class="stage-grid"></div>
-        <button id="start" class="primary big">شروع بازی <span>▶</span></button>
-      </div>
-      <div id="records-panel" class="hidden"><div id="records"></div><button id="clear-records" class="secondary">پاک کردن رکوردها</button></div>
-    </div>
-    <button id="settings-open" class="round">⚙</button>
+    <div id="records-panel" class="hidden"><div id="records"></div><button id="clear-records" class="secondary">پاک کردن رکوردها</button></div>
   </section>
+  <footer class="home-footer"><span>Tap Tile</span><span>آفلاین · بدون نیاز به اینترنت</span></footer>
+</section>
 
-  <section id="game" class="screen hidden">
-    <header class="topbar"><button id="home-btn" class="round small">⌂</button><div class="game-heading"><b id="category-title">حیوانات</b><small id="stage-title">مرحله ۱</small></div><button id="restart" class="round small">↻</button></header>
-    <div class="stats"><div><span>زمان</span><b id="timer">۰۰:۰۰</b></div><div><span>حرکت</span><b id="moves">۰</b></div><div><span>جفت</span><b id="pairs">۰/۶</b></div></div>
-    <main id="board" class="board"></main>
-    <div class="hint">دو کارت یکسان را پیدا کن</div>
-  </section>
+<section id="game" class="screen hidden">
+  <header class="topbar"><button id="home-btn" class="icon-btn small" aria-label="خانه">⌂</button><div class="game-heading"><b id="category-title">حیوانات</b><small id="stage-title">مرحله ۱</small></div><button id="restart" class="icon-btn small" aria-label="شروع دوباره">↻</button></header>
+  <div class="stats"><div><span>زمان</span><b id="timer">۰۰:۰۰</b></div><div><span>حرکت</span><b id="moves">۰</b></div><div><span>جفت</span><b id="pairs">۰/۶</b></div></div>
+  <main id="board" class="board"></main>
+  <div class="hint"><span></span> دو کاشی یکسان را پیدا کن <span></span></div>
+</section>
 
-  <div id="result" class="overlay hidden"><div class="modal"><div class="trophy">🏆</div><h2 id="result-title">مرحله کامل شد!</h2><p id="result-text"></p><div class="result-stats"><div><b id="final-time">۰۰:۰۰</b><span>زمان</span></div><div><b id="final-moves">۰</b><span>حرکت</span></div></div><button id="next" class="primary">مرحله بعد</button><button id="again" class="secondary">دوباره</button><button id="result-home" class="link">بازگشت به منو</button></div></div>
+<div id="result" class="overlay hidden"><div class="modal"><div class="success-mark">✓</div><span class="eyebrow">LEVEL COMPLETE</span><h2 id="result-title">مرحله کامل شد!</h2><p id="result-text"></p><div class="result-stats"><div><b id="final-time">۰۰:۰۰</b><span>زمان</span></div><div><b id="final-moves">۰</b><span>حرکت</span></div></div><button id="next" class="primary">مرحله بعد</button><button id="again" class="secondary">دوباره</button><button id="result-home" class="link">بازگشت به منو</button></div></div>
 
-  <div id="settings" class="overlay hidden"><div class="modal"><h2>تنظیمات</h2><label class="switch"><span>🔊 صدا</span><input id="sound" type="checkbox" checked><i></i></label><label class="switch"><span>📳 ویبره</span><input id="vibrate" type="checkbox" checked><i></i></label><button id="settings-close" class="secondary">بستن</button></div></div>
+<div id="settings" class="overlay hidden"><div class="modal settings-modal"><div class="modal-title"><div><span class="eyebrow">PREFERENCES</span><h2>تنظیمات</h2></div><button id="settings-close" class="close">×</button></div><label class="switch"><span><b>صدا</b><small>افکت‌های بازی و موسیقی</small></span><input id="sound" type="checkbox" checked><i></i></label><label class="switch"><span><b>ویبره</b><small>بازخورد لمسی هنگام لمس کاشی</small></span><input id="vibrate" type="checkbox" checked><i></i></label></div></div>
 </div>
 <script src="game.js"></script>
 </body></html>
