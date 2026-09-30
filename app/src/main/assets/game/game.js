@@ -1,0 +1,30 @@
+const DATA={
+ animals:{name:'حیوانات',icon:'🐾',items:[['🐶','سگ'],['🐱','گربه'],['🦁','شیر'],['🐼','پاندا'],['🐯','ببر'],['🐸','قورباغه'],['🐵','میمون'],['🦊','روباه'],['🐘','فیل'],['🦒','زرافه'],['🐧','پنگوئن'],['🐨','کوالا']]},
+ flags:{name:'پرچم‌ها',icon:'🌍',items:[['🇮🇷','ایران'],['🇯🇵','ژاپن'],['🇩🇪','آلمان'],['🇫🇷','فرانسه'],['🇮🇹','ایتالیا'],['🇧🇷','برزیل'],['🇬🇧','بریتانیا'],['🇨🇦','کانادا'],['🇦🇺','استرالیا'],['🇹🇷','ترکیه'],['🇪🇸','اسپانیا'],['🇮🇳','هند']]},
+ shapes:{name:'اشکال',icon:'🔷',items:[['🔴','دایره'],['🟦','مربع'],['🔺','مثلث'],['⭐','ستاره'],['❤️','قلب'],['⬡','شش‌ضلعی'],['🔶','لوزی'],['🟩','مربع سبز'],['⭕','حلقه'],['✚','بعلاوه'],['🔻','مثلث وارونه'],['💠','لوزی آبی']]},
+ colors:{name:'رنگ‌ها',icon:'🎨',items:[['🔴','قرمز'],['🟠','نارنجی'],['🟡','زرد'],['🟢','سبز'],['🔵','آبی'],['🟣','بنفش'],['🟤','قهوه‌ای'],['⚫','سیاه'],['⚪','سفید'],['🩷','صورتی'],['🩵','آبی روشن'],['🩶','خاکستری']]},
+ fruits:{name:'میوه‌ها',icon:'🍎',items:[['🍎','سیب'],['🍌','موز'],['🍊','پرتقال'],['🍉','هندوانه'],['🍇','انگور'],['🍓','توت‌فرنگی'],['🍍','آناناس'],['🥝','کیوی'],['🍑','هلو'],['🍒','گیلاس'],['🥭','انبه'],['🍐','گلابی']]},
+ vehicles:{name:'وسایل نقلیه',icon:'🚗',items:[['🚗','ماشین'],['🚕','تاکسی'],['🚌','اتوبوس'],['🚓','پلیس'],['🚑','آمبولانس'],['🚒','آتش‌نشانی'],['✈️','هواپیما'],['🚁','هلیکوپتر'],['🚢','کشتی'],['🚲','دوچرخه'],['🚂','قطار'],['🏍️','موتورسیکلت']]}
+};
+const LEVELS={easy:{name:'آسان',pairs:6,cols:3},medium:{name:'متوسط',pairs:8,cols:4},hard:{name:'سخت',pairs:12,cols:4}};
+let category='animals',difficulty='medium',deck=[],first=null,locked=false,matches=0,moves=0,seconds=0,timer=null,started=false,sound=true,vibration=true;
+const $=id=>document.getElementById(id);
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function renderMenu(){
+ $('category-list').innerHTML=Object.entries(DATA).map(([k,v])=>`<button class="category ${k===category?'selected':''}" data-cat="${k}"><span class="emoji">${v.icon}</span><span>${v.name}</span></button>`).join('');
+ $('difficulty-list').innerHTML=Object.entries(LEVELS).map(([k,v])=>`<button class="difficulty ${k===difficulty?'selected':''}" data-level="${k}"><b>${v.pairs}</b>${v.name}</button>`).join('');
+ document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{category=b.dataset.cat;renderMenu()});
+ document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.level;renderMenu()});
+}
+function buildDeck(){let items=DATA[category].items.slice(0,LEVELS[difficulty].pairs);deck=shuffle(items.flatMap((x,i)=>[{id:i,pair:i,emoji:x[0],name:x[1]},{id:i+items.length,pair:i,emoji:x[0],name:x[1]}]));}
+function renderBoard(){const cols=LEVELS[difficulty].cols; $('board').style.gridTemplateColumns=`repeat(${cols},1fr)`; $('board').innerHTML=deck.map((c,i)=>`<button class="card" data-index="${i}" aria-label="کارت"><span class="card-inner"><span class="face back"></span><span class="face front">${c.emoji}</span></span></button>`).join('');document.querySelectorAll('.card').forEach(c=>c.onclick=()=>flip(Number(c.dataset.index)));}
+function startTimer(){if(timer)clearInterval(timer);timer=setInterval(()=>{seconds++;updateHud()},1000)}
+function stopTimer(){clearInterval(timer);timer=null}
+function updateHud(){$('timer').textContent=fa(String(Math.floor(seconds/60)).padStart(2,'0'))+':'+fa(String(seconds%60).padStart(2,'0'));$('moves').textContent=fa(moves);$('matched').textContent=fa(matches);$('progress').textContent=`${fa(matches)} / ${fa(deck.length/2)}`}
+function vibrate(ms){if(vibration&&navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}}
+function beep(){if(!sound)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=new C(),o=c.createOscillator(),g=c.createGain();o.frequency.value=520;g.gain.value=.035;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.08)}catch(e){}}
+function flip(i){if(locked)return;const el=document.querySelectorAll('.card')[i],c=deck[i];if(!el||el.classList.contains('flipped')||el.classList.contains('matched'))return;if(!started){started=true;startTimer()}el.classList.add('flipped');beep();vibrate(12);if(first===null){first=i;return}moves++;const second=i,a=deck[first],b=deck[second];locked=true;if(a.pair===b.pair){setTimeout(()=>{document.querySelectorAll('.card')[first].classList.add('matched');document.querySelectorAll('.card')[second].classList.add('matched');matches++;first=null;locked=false;updateHud();vibrate([30,30,50]);if(matches===deck.length/2)finish()},220)}else{setTimeout(()=>{document.querySelectorAll('.card')[first]?.classList.remove('flipped');document.querySelectorAll('.card')[second]?.classList.remove('flipped');first=null;locked=false;updateHud()},750)}}
+function finish(){stopTimer();const key=`mm_best_${category}_${difficulty}`,old=Number(localStorage.getItem(key)||0);if(!old||seconds<old)localStorage.setItem(key,seconds);$('result-text').innerHTML=`زمان: <b>${$('timer').textContent}</b><br>حرکت‌ها: <b>${fa(moves)}</b><br>جفت‌های پیدا شده: <b>${fa(matches)}</b>`;$('result').classList.remove('hidden');vibrate([50,40,80,40,120])}
+function newGame(){stopTimer();first=null;locked=false;matches=0;moves=0;seconds=0;started=false;buildDeck();$('game-title').textContent=DATA[category].name;renderBoard();updateHud()}
+$('start-btn').onclick=()=>{$('menu').classList.add('hidden');$('game').classList.remove('hidden');newGame()};$('restart-btn').onclick=newGame;$('back-btn').onclick=()=>{stopTimer();$('game').classList.add('hidden');$('menu').classList.remove('hidden');renderMenu()};$('again-btn').onclick=()=>{$('result').classList.add('hidden');newGame()};$('menu-btn').onclick=()=>{$('result').classList.add('hidden');$('game').classList.add('hidden');$('menu').classList.remove('hidden');renderMenu()};$('settings-btn').onclick=()=>$('settings').classList.remove('hidden');$('close-settings').onclick=()=>$('settings').classList.add('hidden');$('sound-toggle').onchange=e=>sound=e.target.checked;$('vibration-toggle').onchange=e=>vibration=e.target.checked;renderMenu();

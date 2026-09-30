@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#062b3b">
+<title>Memory Match</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <section id="menu" class="screen">
+    <div class="brand"><div class="brand-icon">🧠</div><h1>بازی جفت‌ها</h1><p>حافظه‌ات را به چالش بکش!</p></div>
+    <div class="menu-card">
+      <div class="section-title">موضوع بازی</div>
+      <div id="category-list" class="category-grid"></div>
+      <div class="section-title">سختی</div>
+      <div id="difficulty-list" class="difficulty-grid"></div>
+      <button id="start-btn" class="primary">شروع بازی</button>
+    </div>
+    <button id="settings-btn" class="icon-btn">⚙️</button>
+  </section>
+
+  <section id="game" class="screen hidden">
+    <header class="topbar">
+      <button id="back-btn" class="small-btn">⌂</button>
+      <div class="title-wrap"><strong id="game-title">حیوانات</strong><span id="progress">۰ / ۸</span></div>
+      <button id="restart-btn" class="small-btn">↻</button>
+    </header>
+    <div class="hud">
+      <div><span>زمان</span><b id="timer">۰۰:۰۰</b></div>
+      <div><span>حرکت</span><b id="moves">۰</b></div>
+      <div><span>جفت</span><b id="matched">۰</b></div>
+    </div>
+    <main id="board" class="board"></main>
+  </section>
+
+  <div id="result" class="overlay hidden">
+    <div class="result-card"><div id="result-icon">🏆</div><h2>آفرین!</h2><p id="result-text"></p><button id="again-btn" class="primary">دوباره بازی کن</button><button id="menu-btn" class="secondary">بازگشت به منو</button></div>
+  </div>
+
+  <div id="settings" class="overlay hidden">
+    <div class="result-card"><h2>تنظیمات</h2>
+      <label class="setting"><span>صدا</span><input id="sound-toggle" type="checkbox" checked><i></i></label>
+      <label class="setting"><span>ویبره</span><input id="vibration-toggle" type="checkbox" checked><i></i></label>
+      <button id="close-settings" class="secondary">بستن</button>
+    </div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
