@@ -15,13 +15,26 @@
     shapes:{title:'اشکال',path:'shapes',icon:'circle',items:['circle','square','triangle','star','diamond','hexagon','heart','oval','pentagon','octagon','crescent','plus','cross','arrow','cloudshape','ring']},
     colors:{title:'رنگ‌ها',path:'colors',icon:'coral',items:['red','blue','green','yellow','purple','orange','pink','teal','navy','lime','coral','gold','mint','cyan','violet','rose','gray','black']},
     fruits:{title:'میوه‌ها',path:'fruits',icon:'apple',items:['apple','banana','orange','strawberry','watermelon','grape','kiwi','pear','peach','cherry','lemon','pineapple','coconut','mango']},
-    vehicles:{title:'وسایل نقلیه',path:'vehicles',icon:'car',items:['car','bus','plane','rocket','boat','helicopter','train','motorcycle','bicycle','truck','tractor','submarine']}
+    vehicles:{title:'وسایل نقلیه',path:'vehicles',icon:'car',items:['car','bus','plane','rocket','boat','helicopter','train','motorcycle','bicycle','truck','tractor','submarine']},
+    technology:{title:'فناوری',path:'technology',icon:'laptop',items:['laptop','phone','tablet','keyboard','mouse','robot','chip','wifi','cloud','server','code','gamepad','headset','usb','watch','camera']},
+    music:{title:'موسیقی',path:'music',icon:'microphone',items:['microphone','guitar','piano','drum','note','headphones','speaker','radio','vinyl','trumpet','violin','maracas','saxophone','musicbox','metronome','concert']},
+    travel:{title:'سفر',path:'travel',icon:'suitcase',items:['suitcase','passport','map','compass','tent','camera','backpack','ticket','hotel','beach','mountain','train','plane','ship','bus','car']},
+    emojis:{title:'ایموجی',path:'emojis',icon:'happy',items:['happy','love','laugh','cool','wow','sad','angry','sleepy','wink','thinking','starstruck','party','sunglasses','heart','fire','clap']},
+  
   };
 
   // Stages grow gradually. A category automatically locks stages it does not have enough tiles for.
-  const stages=[6,6,8,8,10,10,12,12,14,14,16,16,18,18,20,20,22,22,24,24];
+  const stages=[6,6,8,8,10,10,12,12,14,14,16,16,18,18,20,20,22,22,24,24,26,26,28,28,30,30,32,32,34,34];
   const state={category:'animals',stage:0,deck:[],first:null,second:null,lock:false,moves:0,matched:0,seconds:0,timer:null,sound:JSON.parse(localStorage.getItem('tap_sound')??'true'),vibrate:JSON.parse(localStorage.getItem('tap_vibrate')??'true')};
   const $=id=>document.getElementById(id);
+  const xp=()=>Number(localStorage.getItem('tap_xp')||0);
+  function addXP(n){const v=xp()+n;localStorage.setItem('tap_xp',String(v));updateHomeMeta();}
+  function updateHomeMeta(){
+    const x=$('xp-pill'); if(x)x.textContent=`XP ${F(xp())}`;
+    const p=$('progress-text'); if(p){const u=unlocked();p.textContent=`${F(u)}/${F(stages.length)}`;}
+    const cc=$('category-count'); if(cc)cc.textContent=`${F(categories[state.category].items.length)} تایل`;
+  }
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   const els={home:$('home'),game:$('game'),board:$('board'),categories:$('categories'),stages:$('stages'),records:$('records'),result:$('result'),settings:$('settings'),timer:$('timer'),moves:$('moves'),pairs:$('pairs')};
   const audio={};
 
@@ -47,6 +60,7 @@
       b.onclick=()=>{state.category=key;renderCategories();renderStages();};
       els.categories.appendChild(b);
     });
+    updateHomeMeta();
   }
   function unlocked(){return Number(localStorage.getItem('tap_unlocked')||1)}
   function renderStages(){
@@ -79,8 +93,8 @@
   function startGame(){
     const c=categories[state.category],pairs=stages[state.stage];
     if(pairs>c.items.length){renderStages();return;}
-    const source=c.items;const chosen=[...source].sort(()=>Math.random()-.5).slice(0,pairs);
-    state.deck=[...chosen,...chosen].sort(()=>Math.random()-.5).map((id,index)=>({id,index,open:false,matched:false}));
+    const source=c.items;const chosen=shuffle([...source]).slice(0,pairs);
+    state.deck=shuffle([...chosen,...chosen]).map((id,index)=>({id,index,open:false,matched:false}));
     state.first=null;state.second=null;state.lock=false;state.moves=0;state.matched=0;state.seconds=0;
     $('category-title').textContent=c.title;$('stage-title').textContent=`مرحله ${F(state.stage+1)} · ${F(pairs)} جفت`;
     els.pairs.textContent=`${F(0)}/${F(pairs)}`;els.moves.textContent=F(0);els.timer.textContent=timeText(0);
@@ -110,7 +124,7 @@
   function startTimer(){stopTimer();state.timer=setInterval(()=>{state.seconds++;els.timer.textContent=timeText(state.seconds)},1000)}
   function stopTimer(){if(state.timer){clearInterval(state.timer);state.timer=null}}
   function finish(){
-    stopTimer();stopMusic();saveRecord();const max=unlocked();if(state.stage+1===max&&max<stages.length)localStorage.setItem('tap_unlocked',String(max+1));
+    stopTimer();stopMusic();saveRecord();addXP(25+Math.max(0,Math.round(stages[state.stage]*2-state.moves)));const max=unlocked();if(state.stage+1===max&&max<stages.length)localStorage.setItem('tap_unlocked',String(max+1));
     $('final-time').textContent=timeText(state.seconds);$('final-moves').textContent=F(state.moves);$('result-text').textContent=`${categories[state.category].title} · مرحله ${F(state.stage+1)} را در ${timeText(state.seconds)} و ${F(state.moves)} حرکت کامل کردی.`;
     $('next').classList.toggle('hidden',state.stage+1>=stages.length);$('next').textContent=state.stage+1<stages.length?`مرحله ${F(state.stage+2)} 🚀`:'پایان مراحل';els.result.classList.remove('hidden');play('win');buzz([60,40,100]);
   }
@@ -124,5 +138,5 @@
   $('sound').onchange=e=>{state.sound=e.target.checked;localStorage.setItem('tap_sound',JSON.stringify(state.sound));if(state.sound){play('click');startMusic()}else stopMusic()};
   $('vibrate').onchange=e=>{state.vibrate=e.target.checked;localStorage.setItem('tap_vibrate',JSON.stringify(state.vibrate));buzz(20)};
   $('clear-records').onclick=()=>{if(confirm('همه رکوردها پاک شوند؟')){localStorage.removeItem('tap_records');renderRecords()}};
-  loadAudio();renderCategories();renderStages();renderRecords();showScreen('home');
+  loadAudio();renderCategories();renderStages();renderRecords();updateHomeMeta();showScreen('home');
 })();

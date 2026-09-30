@@ -10,13 +10,16 @@
 <body>
 <div id="app">
 <section id="home" class="screen active">
+  <div class="ad-slot top-ad" id="top-ad" aria-label="تبلیغات">
+    <span class="ad-badge">تبلیغ</span><div class="ad-copy"><b>یک بازی جدید را امتحان کن</b><small>پیشنهاد ویژه برای بازیکنان</small></div><span class="ad-arrow">‹</span>
+  </div>
   <header class="home-header">
     <div class="brand"><div class="brand-mark"><img src="assets/logo.svg" alt="Tap Tile"></div><div><h1>Tap Tile</h1><p>بازی حافظه‌ی مینیمال</p></div></div>
     <button id="settings-open" class="icon-btn settings-btn" aria-label="تنظیمات"><span></span><span></span><span></span></button>
   </header>
 
   <div class="hero-banner">
-    <div><span class="eyebrow">MEMORY · MATCH · FOCUS</span><h2>دو کاشی یکسان را<br><strong>پیدا کن.</strong></h2><p>تمرکز، سرعت و حافظه‌ات را در مراحل مختلف به چالش بکش.</p></div>
+    <div><span class="eyebrow">MEMORY · MATCH · FOCUS</span><h2>دو کاشی یکسان را<br><strong>پیدا کن.</strong></h2><p>تمرکز، سرعت و حافظه‌ات را در مراحل مختلف به چالش بکش.</p><div class="hero-pills"><span>آفلاین</span><span id="xp-pill">XP ۰</span><span>۳۰ مرحله</span></div></div>
     <div class="hero-art"><i></i><i></i><i></i><i></i></div>
   </div>
 
@@ -25,13 +28,13 @@
     <div id="play-panel">
       <div class="section-head"><div><b>موضوع</b><small>یک مجموعه انتخاب کن</small></div><span id="category-count"></span></div>
       <div id="categories" class="chips"></div>
-      <div class="section-head stage-head"><div><b>مرحله</b><small>با پیشرفت، مراحل سخت‌تر می‌شوند</small></div></div>
+      <div class="section-head stage-head"><div><b>مرحله‌ها</b><small>هر مرحله با تعداد جفت‌های بیشتر چالش‌برانگیزتر می‌شود</small></div><span class="progress-text" id="progress-text"></span></div>
       <div id="stages" class="stage-grid"></div>
       <button id="start" class="primary big">شروع بازی <span>›</span></button>
     </div>
     <div id="records-panel" class="hidden"><div id="records"></div><button id="clear-records" class="secondary">پاک کردن رکوردها</button></div>
   </section>
-  <footer class="home-footer"><span>Tap Tile</span><span>آفلاین · بدون نیاز به اینترنت</span></footer>
+  <div class="home-tip"><span>✦</span><b>ترفند:</b> اول گوشه‌ها را بررسی کن؛ مسیر کارت‌ها را بهتر به خاطر می‌سپاری.</div><footer class="home-footer"><span>Tap Tile</span><span>آفلاین · بدون نیاز به اینترنت</span></footer>
 </section>
 
 <section id="game" class="screen hidden">

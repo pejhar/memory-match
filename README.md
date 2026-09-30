@@ -1,16 +1,32 @@
-#Tap Tile v1
+# Tap Tile v2.0
 
-A dependency-free Persian Tap Tile game built as a local WebView app.
+بازی حافظه فارسی آفلاین برای اندروید، با رابط کاربری بازطراحی‌شده و مناسب انتشار در مارکت.
 
-## Features
-- Animals, flags, shapes, colors, fruits, vehicles
-- Easy / Medium / Hard
-- True pair matching logic
-- Timer, moves and matched-pair counter
-- Local best-time storage
-- Optional sound and vibration
-- No network dependency
-- Android WebView wrapper
+## تغییرات این نسخه
+- بنر تبلیغاتی در بالای صفحه اصلی با طراحی هماهنگ با UI
+- ساختار آماده برای اتصال بنر به سرویس تبلیغات کافه‌بازار
+- ۱۴ موضوع بازی: پرچم‌ها، حیوانات، طبیعت، فضا، خوراکی‌ها، ورزش، اشیاء، اشکال، رنگ‌ها، میوه‌ها، وسایل نقلیه، فناوری، موسیقی، سفر و ایموجی
+- ۳۰ مرحله با افزایش تدریجی تعداد جفت‌ها
+- XP محلی برای ایجاد حس پیشرفت
+- چیدمان بهتر مراحل و موضوع‌ها
+- تنظیمات صدا و ویبره
+- رکورد محلی
+- آیکون جدید
+- چهار اسکرین‌شات تبلیغاتی 1080×1920 در پوشه `store-assets`
+- حذف MainActivity تکراری و یکدست‌سازی namespace / applicationId
+- بهبود WebView و چرخه عمر Activity
+- بدون وابستگی جاوااسکریپتی خارجی و بدون نیاز به اینترنت برای خود بازی
+
+## تبلیغات کافه‌بازار
+جایگاه تبلیغاتی صفحه اصلی فعال و آماده است، اما شناسه واحد تبلیغاتی در پروژه وجود ندارد و عمداً مقدار جعلی قرار داده نشده است. برای درآمدزایی واقعی باید یک Ad Unit از پنل سرویس تبلیغات بازار بسازید و SDK رسمی Bazaar Ads را طبق نسخه و API فعلی آن متصل کنید.
+
+نسخه موجود SDK در Maven Central با مختصات `org.cafebazaar:ads:1.0.0-rc4` منتشر شده است. قبل از انتشار نهایی، API و راهنمای همان نسخه را با پنل توسعه‌دهنده تطبیق دهید.
 
 ## Build
-Open this project in Android Studio and build the debug APK.
+پروژه را در Android Studio باز کنید و از Gradle Sync سپس Build APK استفاده کنید.
+
+Application ID:
+`ir.keynu.taptile`
+
+Version:
+`2.0.0`
