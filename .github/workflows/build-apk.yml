@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: Build APK
+    name: Build Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -37,82 +37,44 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           echo "ANDROID_HOME=${ANDROID_HOME}"
-          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}"
-
-          echo "Checking Android SDK..."
-
-          if [ ! -d "${ANDROID_HOME}/platforms/android-35" ]; then
-            echo "ERROR: Android SDK Platform 35 is not installed."
-            echo "Available platforms:"
-            ls -la "${ANDROID_HOME}/platforms" || true
-            exit 1
-          fi
-
+          echo "Checking Android SDK Platform 35..."
+          test -d "${ANDROID_HOME}/platforms/android-35"
           echo "Android SDK Platform 35: OK"
-
-          if [ ! -d "${ANDROID_HOME}/build-tools/35.0.0" ]; then
-            echo "ERROR: Android Build Tools 35.0.0 are not installed."
-            echo "Available build tools:"
-            ls -la "${ANDROID_HOME}/build-tools" || true
-            exit 1
-          fi
-
+          echo "Checking Android Build Tools 35.0.0..."
+          test -d "${ANDROID_HOME}/build-tools/35.0.0"
           echo "Android Build Tools 35.0.0: OK"
-
-          echo "Installed Android platforms:"
-          ls -la "${ANDROID_HOME}/platforms"
-
-          echo "Installed Android build tools:"
-          ls -la "${ANDROID_HOME}/build-tools"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Show Gradle version
+      - name: Build release APK
         run: |
-          gradle --version
+          gradle --no-daemon --stacktrace assembleRelease
 
-      - name: Build debug APK
-        run: |
-          gradle --no-daemon --stacktrace assembleDebug
-
-      - name: Verify APK
+      - name: Verify release APK
         shell: bash
         run: |
           set -euo pipefail
-
-          APK="app/build/outputs/apk/debug/app-debug.apk"
-
-          if [ ! -f "$APK" ]; then
-            echo "ERROR: APK was not generated."
-            exit 1
-          fi
-
-          echo "APK successfully generated:"
+          APK="app/build/outputs/apk/release/app-release.apk"
+          test -f "$APK"
+          echo "Release APK generated successfully:"
           ls -lh "$APK"
 
-      - name: Prepare release APK
+      - name: Prepare final APK
         shell: bash
         run: |
           set -euo pipefail
-
           mkdir -p release
-
-          cp \
-            app/build/outputs/apk/debug/app-debug.apk \
-            "release/Tap-Tile-${GITHUB_SHA::7}-debug.apk"
-
-          echo "Release files:"
+          cp app/build/outputs/apk/release/app-release.apk "release/Tap-Tile-${GITHUB_SHA::7}-release.apk"
           ls -lh release/
 
-      - name: Upload APK artifact
+      - name: Upload final APK
         uses: actions/upload-artifact@v4
         with:
-          name: tap-tile-debug-apk
+          name: tap-tile-release-apk
           path: release/*.apk
           if-no-files-found: error
           retention-days: 30
