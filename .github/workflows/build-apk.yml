@@ -2,10 +2,13 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    branches:
+      - main
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -13,8 +16,6 @@ permissions:
 
 env:
   GRADLE_VERSION: '8.10.2'
-  ANDROID_PLATFORM: 'android-35'
-  ANDROID_BUILD_TOOLS: '35.0.0'
 
 jobs:
   build:
@@ -32,30 +33,81 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Prepare Android SDK
+      - name: Check Android SDK
         shell: bash
         run: |
           set -euo pipefail
-          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -x "$SDKMANAGER" ]; then
-            SDKMANAGER="${ANDROID_HOME}/cmdline-tools/16.0/bin/sdkmanager"
+
+          echo "ANDROID_HOME=${ANDROID_HOME}"
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}"
+
+          echo "Checking Android SDK..."
+
+          if [ ! -d "${ANDROID_HOME}/platforms/android-35" ]; then
+            echo "ERROR: Android SDK Platform 35 is not installed."
+            echo "Available platforms:"
+            ls -la "${ANDROID_HOME}/platforms" || true
+            exit 1
           fi
-          echo "Using sdkmanager: $SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" "platform-tools" "platforms;${ANDROID_PLATFORM}" "build-tools;${ANDROID_BUILD_TOOLS}"
+
+          echo "Android SDK Platform 35: OK"
+
+          if [ ! -d "${ANDROID_HOME}/build-tools/35.0.0" ]; then
+            echo "ERROR: Android Build Tools 35.0.0 are not installed."
+            echo "Available build tools:"
+            ls -la "${ANDROID_HOME}/build-tools" || true
+            exit 1
+          fi
+
+          echo "Android Build Tools 35.0.0: OK"
+
+          echo "Installed Android platforms:"
+          ls -la "${ANDROID_HOME}/platforms"
+
+          echo "Installed Android build tools:"
+          ls -la "${ANDROID_HOME}/build-tools"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Build debug APK
-        run: gradle --no-daemon --stacktrace assembleDebug
-
-      - name: Rename APK
+      - name: Show Gradle version
         run: |
+          gradle --version
+
+      - name: Build debug APK
+        run: |
+          gradle --no-daemon --stacktrace assembleDebug
+
+      - name: Verify APK
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+
+          if [ ! -f "$APK" ]; then
+            echo "ERROR: APK was not generated."
+            exit 1
+          fi
+
+          echo "APK successfully generated:"
+          ls -lh "$APK"
+
+      - name: Prepare release APK
+        shell: bash
+        run: |
+          set -euo pipefail
+
           mkdir -p release
-          cp app/build/outputs/apk/debug/app-debug.apk "release/Tap-Tile-${GITHUB_SHA::7}-debug.apk"
+
+          cp \
+            app/build/outputs/apk/debug/app-debug.apk \
+            "release/Tap-Tile-${GITHUB_SHA::7}-debug.apk"
+
+          echo "Release files:"
+          ls -lh release/
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
