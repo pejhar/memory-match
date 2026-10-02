@@ -6,6 +6,16 @@
 <meta name="theme-color" content="#0d1020">
 <title>Tap Tile</title>
 <link rel="stylesheet" href="style.css">
+<script type="text/javascript">
+(function(){
+  const head = document.getElementsByTagName("head")[0];
+  const script = document.createElement("script");
+  script.type = "text/javascript";
+  script.async = true;
+  script.src = "https://s1.mediaad.org/serve/keynu.ir/loader.js";
+  head.appendChild(script);
+})();
+</script>
 </head>
 <body>
 <div id="app">
@@ -47,15 +57,37 @@
   <div id="mediaad-JRm7j"></div>
 </div>
 
-<script type="text/javascript">
-  (function () {
-    const head = document.getElementsByTagName("head")[0];
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.async = true;
-    script.src = "https://s1.mediaad.org/serve/keynu.ir/loader.js";
-    head.appendChild(script);
-  })();
+<script>
+(function () {
+  const allowed = document.getElementById("sticky-mediaad");
+
+  function isMediaAdNode(node) {
+    if (!(node instanceof Element)) return false;
+    if (allowed && allowed.contains(node)) return false;
+    const id = (node.id || "").toLowerCase();
+    const cls = (typeof node.className === "string" ? node.className : "").toLowerCase();
+    const src = (node.getAttribute("src") || "").toLowerCase();
+    const href = (node.getAttribute("href") || "").toLowerCase();
+    const text = (node.textContent || "").toLowerCase();
+    return id.includes("mediaad") || cls.includes("mediaad") || src.includes("mediaad") || href.includes("mediaad") || text.includes("mediaad.org");
+  }
+
+  function removeOutsideAds() {
+    document.querySelectorAll("body *").forEach(function (node) {
+      if (allowed && allowed.contains(node)) return;
+      if (isMediaAdNode(node)) node.remove();
+    });
+    document.querySelectorAll("body > iframe").forEach(function (node) {
+      if (!allowed || !allowed.contains(node)) node.remove();
+    });
+  }
+
+  const observer = new MutationObserver(removeOutsideAds);
+  observer.observe(document.body, { childList: true, subtree: true });
+  removeOutsideAds();
+})();
 </script>
+
+
 <script src="game.js"></script>
 </body></html>
