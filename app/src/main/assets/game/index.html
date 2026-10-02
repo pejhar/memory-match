@@ -20,20 +20,6 @@
     <div class="hero-art"><i></i><i></i><i></i><i></i></div>
   </div>
 
-  <div class="mediaad-slot" aria-label="تبلیغات">
-    <div id="mediaad-JRm7j"></div>
-  <script type="text/javascript">
-    (function (){
-      const head = document.getElementsByTagName("head")[0];
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.async = true;
-      script.src = "https://s1.mediaad.org/serve/keynu.ir/loader.js";
-      head.appendChild(script);
-    })();
-  </script>
-  </div>
-
   <section class="home-card">
     <div class="home-tabs"><button class="tab active" data-tab="play">بازی</button><button class="tab" data-tab="records">رکوردها</button></div>
     <div id="play-panel">
@@ -59,5 +45,22 @@
 
 <div id="settings" class="overlay hidden"><div class="modal settings-modal"><div class="modal-title"><div><span class="eyebrow">PREFERENCES</span><h2>تنظیمات</h2></div><button id="settings-close" class="close">×</button></div><label class="switch"><span><b>صدا</b><small>افکت‌های بازی و موسیقی</small></span><input id="sound" type="checkbox" checked><i></i></label><label class="switch"><span><b>ویبره</b><small>بازخورد لمسی هنگام لمس کاشی</small></span><input id="vibrate" type="checkbox" checked><i></i></label></div></div>
 </div>
+
+<!-- Sticky 468x60 MediaAd banner. The reserved space is kept outside every screen
+     so game content never moves underneath the banner. -->
+<div id="sticky-mediaad" class="sticky-mediaad" aria-label="تبلیغات">
+  <div id="mediaad-JRm7j"></div>
+</div>
+
+<script type="text/javascript">
+  (function () {
+    const head = document.getElementsByTagName("head")[0];
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = "https://s1.mediaad.org/serve/keynu.ir/loader.js";
+    head.appendChild(script);
+  })();
+</script>
 <script src="game.js"></script>
 </body></html>
