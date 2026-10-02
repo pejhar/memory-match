@@ -11,6 +11,7 @@
 @media(min-width:600px){#home{padding-top:28px}.chips{grid-template-columns:repeat(6,1fr)}.hero-banner{min-height:205px}.stage-grid{grid-template-columns:repeat(10,1fr);max-height:none}.board{grid-template-columns:repeat(6,1fr)}}@media(max-width:430px){.hero-banner{padding:21px 18px;min-height:168px}.hero-banner h2{font-size:24px}.hero-art{width:112px;transform:scale(.8) rotate(-8deg);margin-left:-18px}.chips{grid-template-columns:repeat(4,1fr)}.chip{min-height:74px}.stage-grid{grid-template-columns:repeat(5,1fr)}.board{gap:6px}.face{border-radius:14px}.front{padding:4px}.tile-image{border-radius:10px}}@media(max-width:360px){.hero-art{display:none}.chips{grid-template-columns:repeat(3,1fr)}.stage-grid{grid-template-columns:repeat(4,1fr)}.board{gap:5px}.face{border-radius:12px}}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .hero-pills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}.hero-pills span{font-size:8px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);color:#9ba3ba}
 .progress-text{font-size:9px;color:#777ff4;background:#191e31;padding:5px 8px;border-radius:999px}.home-tip{margin:12px 2px 0;padding:11px 12px;background:#0d1222;border:1px solid rgba(255,255,255,.05);border-radius:14px;color:#747e96;font-size:9px;line-height:1.8}.home-tip span{color:#f4b942;margin-left:4px}.home-tip b{color:#aeb6ca}
 @media(max-width:600px){.chips{grid-template-columns:repeat(4,1fr)}.stage-grid{grid-template-columns:repeat(5,1fr)}}
@@ -21,3 +22,8 @@
 .mediaad-slot:empty{display:none}
 #mediaad-JR3Ax{width:100%;max-width:720px}
 >>>>>>> a17543f (dade)
+=======
+.mediaad-slot{width:min(100%,720px);min-height:0;margin:0 auto 14px;display:flex;justify-content:center;align-items:center;overflow:hidden;border-radius:16px}
+.mediaad-slot:empty{display:none}
+#mediaad-JR3Ax{width:100%;max-width:720px}
+>>>>>>> 684ae68 (Tabaan)
