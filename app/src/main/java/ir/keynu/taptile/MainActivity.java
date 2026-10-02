@@ -3,6 +3,7 @@ package ir.keynu.taptile;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
         s.setDisplayZoomControls(false);
         CookieManager.getInstance().setAcceptCookie(true);
         web.setWebViewClient(new WebViewClient());
+        web.setWebChromeClient(new WebChromeClient());
 
         // The home-screen ad slot is intentionally kept in the HTML layer.
         // Connect it to the Bazaar Ads SDK after creating an ad unit in the
@@ -60,10 +62,20 @@ public class MainActivity extends Activity {
         if (web != null) web.onResume();
     }
 
+    @Override public void onBackPressed() {
+        if (web != null && web.canGoBack()) {
+            web.goBack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
     @Override protected void onDestroy() {
         if (web != null) {
             web.stopLoading();
+            web.loadUrl("about:blank");
             web.destroy();
+            web = null;
         }
         super.onDestroy();
     }
