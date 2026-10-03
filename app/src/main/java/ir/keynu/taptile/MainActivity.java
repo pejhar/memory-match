@@ -1,4 +1,4 @@
-package ir.keynu.taptile;
+package ir.keynu.taptile2;
 
 import android.app.Activity;
 import android.graphics.Color;

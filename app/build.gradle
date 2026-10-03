@@ -6,11 +6,11 @@ def releaseKeyAlias = System.getenv("KEY_ALIAS")
 def releaseKeyPassword = System.getenv("KEY_PASSWORD")
 
 android {
-    namespace 'ir.keynu.taptile'
+    namespace 'ir.keynu.taptile2'
     compileSdk 35
 
     defaultConfig {
-        applicationId 'ir.keynu.taptile'
+        applicationId 'ir.keynu.taptile2'
         minSdk 23
         targetSdk 35
         versionCode 5
