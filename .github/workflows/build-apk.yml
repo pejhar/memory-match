@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: Build Release APK
+    name: Build Signed Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -38,37 +38,82 @@ jobs:
         run: |
           set -euo pipefail
           echo "ANDROID_HOME=${ANDROID_HOME}"
-          echo "Checking Android SDK Platform 35..."
           test -d "${ANDROID_HOME}/platforms/android-35"
-          echo "Android SDK Platform 35: OK"
-          echo "Checking Android Build Tools 35.0.0..."
           test -d "${ANDROID_HOME}/build-tools/35.0.0"
-          echo "Android Build Tools 35.0.0: OK"
+          echo "Android SDK Platform 35 and Build Tools 35.0.0: OK"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Build release APK
+      - name: Check release signing secrets
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
+          set -euo pipefail
+
+          test -n "$KEYSTORE_BASE64" || { echo "ERROR: KEYSTORE_BASE64 is missing."; exit 1; }
+          test -n "$KEYSTORE_PASSWORD" || { echo "ERROR: KEYSTORE_PASSWORD is missing."; exit 1; }
+          test -n "$KEY_ALIAS" || { echo "ERROR: KEY_ALIAS is missing."; exit 1; }
+          test -n "$KEY_PASSWORD" || { echo "ERROR: KEY_PASSWORD is missing."; exit 1; }
+
+          echo "All release signing secrets are present."
+
+      - name: Decode release keystore
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/tap-tile-release.jks"
+          test -s "$RUNNER_TEMP/tap-tile-release.jks"
+
+          echo "Release keystore decoded successfully."
+
+      - name: Build signed release APK
+        shell: bash
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/tap-tile-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
           gradle --no-daemon --stacktrace assembleRelease
 
-      - name: Verify release APK
+      - name: Verify release APK and signature
         shell: bash
         run: |
           set -euo pipefail
+
           APK="app/build/outputs/apk/release/app-release.apk"
+          APKSIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+
           test -f "$APK"
-          echo "Release APK generated successfully:"
+          test -x "$APKSIGNER"
+
+          echo "Release APK:"
           ls -lh "$APK"
+
+          echo "Verifying APK signature..."
+          "$APKSIGNER" verify --verbose "$APK"
+
+          echo "APK signature verification: OK"
 
       - name: Prepare final APK
         shell: bash
         run: |
           set -euo pipefail
+
           mkdir -p release
-          cp app/build/outputs/apk/release/app-release.apk "release/Tap-Tile-${GITHUB_SHA::7}-release.apk"
+          cp app/build/outputs/apk/release/app-release.apk             "release/Tap-Tile-${GITHUB_SHA::7}-release.apk"
+
           ls -lh release/
 
       - name: Upload final APK

@@ -11,3 +11,8 @@ local.properties
 # OS
 .DS_Store
 Thumbs.db
+
+# Release signing keys (never commit private keystores)
+*.jks
+*.keystore
+*.p12
